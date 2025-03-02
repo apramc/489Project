@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom'; 
 import { RiNotification2Fill, RiMessage2Fill, RiSearchLine  } from "react-icons/ri";
 import { AiFillHome } from "react-icons/ai";
 import { IoMdPerson } from "react-icons/io";
@@ -26,10 +27,10 @@ function Homepage() {
         <div className="menu-nav">
           <nav>
             <ul>
-              <li><a href="/"><AiFillHome size={30}/></a></li>
-              <li><a href="/"><RiMessage2Fill size={30}/></a></li>
-              <li><a href="/"><RiNotification2Fill size={30}/></a></li>
-              <li><a href="/"><IoMdPerson size={30}/></a></li>
+              <li><Link to="/"><AiFillHome size={30}/></Link></li>
+              <li><Link to="/"><RiMessage2Fill size={30}/></Link></li>
+              <li><Link to="/"><RiNotification2Fill size={30}/></Link></li>
+              <li><Link to="/login"><IoMdPerson size={30}/></Link></li>  {/* Updated link to person icon */}
             </ul>
           </nav>
         </div>
@@ -73,4 +74,4 @@ function Homepage() {
   );
 }
 
-export default Homepage
+export default Homepage;
