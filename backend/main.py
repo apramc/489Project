@@ -1,8 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from typing import List
+from routes import router
 
 app = FastAPI()
 
@@ -18,9 +17,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.post("/home")
-async def home():
-    return {"message": "Welcome to the FastAPI backend!"}
+app.include_router(router)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
