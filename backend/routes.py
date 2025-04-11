@@ -1,26 +1,9 @@
 from fastapi import APIRouter
-from pydantic import BaseModel
-import database
+from UserController import router as user_router
+from ListingController import router as listing_router
 
 router = APIRouter()
 
-class User(BaseModel):
-    username: str
-    password: str
-    email: str
-
-@router.post("/home")
-async def home():
-    return {"message": "Welcome to the FastAPI backend!"}
-
-@router.post("/signup")
-async def signup(user: User):
-    return {"message": "User signed up successfully!", "user": user}
-
-@router.post("/login")
-async def login(user: User):
-    return {"message": "User logged in successfully!", "user": user}
-
-@router.post("/admin")
-async def login():
-    return {"message": "Admin dashboard loaded successfully!!"}
+# Routes to controllers
+router.include_router(user_router, prefix="/users", tags=["Users"])
+router.include_router(listing_router, prefix="/home", tags=["Listings"])

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   RiNotification2Fill,
@@ -7,19 +7,95 @@ import {
 } from "react-icons/ri";
 import { AiFillHome } from "react-icons/ai";
 import { IoMdPerson } from "react-icons/io";
-import logo from "../assets/wsu-logo.png";
 
+import CreateListing from "./CreateListing";
+
+import logo from "../assets/wsu-logo.png";
 import "../../public/styles/Homepage.css";
 
 function Homepage() {
-  useEffect(() => {
-    document.title = "Homepage";
+  const [listings, setListings] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    price: "",
+    description: "",
+    tags: "",
+    image: null,
+    date: new Date().toISOString().split("T")[0], // Default to today's date
   });
+
+  // Fetch existing listings from the backend
+  useEffect(() => {
+    const fetchListings = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/home");
+        if (response.ok) {
+          const data = await response.json();
+          setListings(data);
+        } else {
+          console.error("Failed to fetch listings");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    fetchListings();
+  }, []);
+
+  const handleListingCreated = (newListing) => {
+    setListings([...listings, newListing]);
+  };
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Use FormData to handle file uploads
+    const formDataToSend = new FormData();
+    formDataToSend.append("name", formData.name);
+    formDataToSend.append("price", formData.price);
+    formDataToSend.append("description", formData.description);
+    formDataToSend.append("image", formData.image); // Append the file
+    formDataToSend.append("date", formData.date);
+
+    try {
+      const response = await fetch("http://localhost:8000/home", {
+        method: "POST",
+        body: formDataToSend, // Send as FormData
+      });
+
+      if (response.ok) {
+        const newListing = await response.json();
+        handleListingCreated(newListing); // Update the listings
+        setShowModal(false); // Close the modal
+        setFormData({
+          name: "",
+          price: "",
+          description: "",
+          image: null,
+          date: new Date().toISOString().split("T")[0], // Reset the date
+        }); // Reset the form
+      } else {
+        console.error("Failed to create listing");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const handleFileChange = (e) => {
+    setFormData({ ...formData, image: e.target.files[0] });
+  };
 
   return (
     <>
       <div className="homepage-header">
-        <a href="/" style={{ color: "inherit", textDecoration: "none" }}>
+        <a href="/home" style={{ color: "inherit", textDecoration: "none" }}>
           <img src={logo} alt="WSU Logo" />
         </a>
         <div className="header-title">
@@ -80,7 +156,30 @@ function Homepage() {
           <div className="card">
             <article
               className="card-group-item"
-              style={{ marginBottom: "20px", marginTop: "35px" }}
+              style={{
+                marginBottom: "20px",
+                marginTop: "70px",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <button
+                className="btn btn-primary"
+                style={{
+                  width: "80%",
+                  marginTop: "10px",
+                  backgroundColor: "#ca1237",
+                }}
+                onClick={() => {
+                  setShowModal(true);
+                }}
+              >
+                Create a listing
+              </button>
+            </article>
+            <article
+              className="card-group-item"
+              style={{ marginBottom: "20px" }}
             >
               <header className="card-header">
                 <h6 className="title">Price</h6>
@@ -147,7 +246,7 @@ function Homepage() {
                 </div>
               </div>
             </article>
-            <article className="card-group-item">
+            <article className="card-group-item" style={{ marginTop: "20px" }}>
               <header className="card-header">
                 <h6 className="title">Courses</h6>
               </header>
@@ -398,7 +497,114 @@ function Homepage() {
             </article>
           </div>
         </div>
-        <div className="listings"></div>
+        <div className="create-listing"></div>
+        {/* Modal */}
+        {showModal && (
+          <div className="modal-overlay">
+            <div className="modal-content">
+              <h2>Create a Listing</h2>
+              <form onSubmit={handleSubmit}>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
+                />
+                <input
+                  type="number"
+                  name="price"
+                  placeholder="Price"
+                  value={formData.price}
+                  onChange={handleInputChange}
+                  required
+                />
+                <textarea
+                  name="description"
+                  placeholder="Description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  required
+                />
+                <input
+                  type="file"
+                  name="image"
+                  accept="image/png, image/jpeg"
+                  onChange={handleFileChange}
+                  required
+                />
+                <input type="date" name="date" value={formData.date} readOnly />
+                <button type="submit">Submit</button>
+                <button type="button" onClick={() => setShowModal(false)}>
+                  Cancel
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+        <div
+          className="listings"
+          style={{
+            marginTop: "100px",
+            marginLeft: "35px",
+          }}
+        >
+          <div className="row">
+            {listings.map((listing, index) => (
+              <div
+                className="col-md-6 col-lg-4"
+                key={index}
+                style={{
+                  width: "300px", // Card width
+                  padding: "10px", // Card padding
+                  margin: "20px", // Gap between cards
+                }}
+              >
+                <div
+                  className="card hover-img overflow-hidden rounded-2"
+                  style={{
+                    width: "300px", // Card width
+                    height: "300px", // Card height
+                    border: "1px solid #ccc", // Card border
+                    borderRadius: "25px", // Card border radius
+                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // Card box shadow
+                    overflow: "hidden", // Ensure content doesn't overflow
+                    display: "flex", // Center the card
+                  }}
+                >
+                  <div className="card-body p-0">
+                    <img
+                      src={`http://localhost:8000/${listing.image}`} // Use the image path from the backend
+                      alt={listing.name}
+                      className="img-fluid w-100 object-fit-cover"
+                      style={{
+                        height: "200px", // Adjust the height of the image
+                        objectFit: "cover", // Ensure the image covers the area
+                      }}
+                    />
+                    <div
+                      className="p-4 d-flex align-items-center justify-content-between"
+                      style={{
+                        height: "100px", // Adjust the height of the text container
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <div>
+                        <h6 className="fw-semibold mb-0 fs-4">
+                          {listing.name}
+                        </h6>
+                        <span className="text-dark fs-2">${listing.price}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </>
   );

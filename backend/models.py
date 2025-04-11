@@ -25,6 +25,5 @@ class Listing(Base):
     name = Column(String, index=True)
     price = Column(Float, index=True)
     description = Column(String, index=True)
-    tags = Column(String, index=True)
     image = Column(String, index=True)
     date = Column(String, index=True)
