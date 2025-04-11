@@ -40,10 +40,9 @@ pip install -r requirements.txt
      ```
 4. Start the backend server:
 
-   ````bash
+   ```bash
    uvicorn main:app --reload
-       ```
-   ````
+   ```
 
 ## Frontend Setup
 
