@@ -18,6 +18,9 @@ Before setting up the project, ensure you have the following installed on your s
 ```bash
 pip install -r requirements.txt
 ```
+```bash
+npm install vite
+```
 
 ## Backend Setup
 
