@@ -6,27 +6,45 @@ function CreateListing({ onListingCreated }) {
     price: "",
     description: "",
     tags: "",
-    image: "",
-    date: "",
+    image: null, // Store the uploaded file
+    date: new Date().toISOString().split("T")[0], // Automatically set the current date
   });
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleFileChange = (e) => {
+    setFormData({ ...formData, image: e.target.files[0] }); // Store the uploaded file
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formDataToSend = new FormData();
+    formDataToSend.append("name", formData.name);
+    formDataToSend.append("price", formData.price);
+    formDataToSend.append("description", formData.description);
+    formDataToSend.append("tags", formData.tags);
+    formDataToSend.append("image", formData.image); // Append the file
+    formDataToSend.append("date", formData.date);
+
     try {
       const response = await fetch("http://localhost:8000/home", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+        body: formDataToSend, // Send as FormData
       });
       if (response.ok) {
         const newListing = await response.json();
         onListingCreated(newListing);
+        setFormData({
+          name: "",
+          price: "",
+          description: "",
+          tags: "",
+          image: null,
+          date: new Date().toISOString().split("T")[0], // Reset the date
+        }); // Reset the form
       } else {
         console.error("Failed to create listing");
       }
@@ -43,6 +61,7 @@ function CreateListing({ onListingCreated }) {
         placeholder="Name"
         value={formData.name}
         onChange={handleChange}
+        required
       />
       <input
         type="number"
@@ -50,26 +69,30 @@ function CreateListing({ onListingCreated }) {
         placeholder="Price"
         value={formData.price}
         onChange={handleChange}
+        required
       />
       <textarea
         name="description"
         placeholder="Description"
         value={formData.description}
         onChange={handleChange}
+        required
       />
       <input
         type="text"
-        name="image"
-        placeholder="Image URL"
-        value={formData.image}
+        name="tags"
+        placeholder="Tags (comma-separated)"
+        value={formData.tags}
         onChange={handleChange}
       />
       <input
-        type="date"
-        name="date"
-        value={formData.date}
-        onChange={handleChange}
+        type="file"
+        name="image"
+        accept="image/png, image/jpeg"
+        onChange={handleFileChange}
+        required
       />
+      <input type="date" name="date" value={formData.date} readOnly />
       <button type="submit">Create Listing</button>
     </form>
   );
