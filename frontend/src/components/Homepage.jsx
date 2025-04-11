@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   RiNotification2Fill,
@@ -7,19 +7,42 @@ import {
 } from "react-icons/ri";
 import { AiFillHome } from "react-icons/ai";
 import { IoMdPerson } from "react-icons/io";
-import logo from "../assets/wsu-logo.png";
 
+import CreateListing from "./CreateListing";
+
+import logo from "../assets/wsu-logo.png";
 import "../../public/styles/Homepage.css";
 
 function Homepage() {
+  const [listings, setListings] = useState([]);
+
+  // Fetch existing listings from the backend
   useEffect(() => {
-    document.title = "Homepage";
-  });
+    const fetchListings = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/listings");
+        if (response.ok) {
+          const data = await response.json();
+          setListings(data);
+        } else {
+          console.error("Failed to fetch listings");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    fetchListings();
+  }, []);
+
+  const handleListingCreated = (newListing) => {
+    setListings([...listings, newListing]);
+  };
 
   return (
     <>
       <div className="homepage-header">
-        <a href="/" style={{ color: "inherit", textDecoration: "none" }}>
+        <a href="/home" style={{ color: "inherit", textDecoration: "none" }}>
           <img src={logo} alt="WSU Logo" />
         </a>
         <div className="header-title">
@@ -80,7 +103,28 @@ function Homepage() {
           <div className="card">
             <article
               className="card-group-item"
-              style={{ marginBottom: "20px", marginTop: "35px" }}
+              style={{
+                marginBottom: "20px",
+                marginTop: "70px",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <button
+                className="btn btn-primary"
+                style={{
+                  width: "80%",
+                  marginTop: "10px",
+                  backgroundColor: "#ca1237",
+                }}
+                onClick={() => alert("Button clicked!")}
+              >
+                Create a listing
+              </button>
+            </article>
+            <article
+              className="card-group-item"
+              style={{ marginBottom: "20px" }}
             >
               <header className="card-header">
                 <h6 className="title">Price</h6>
@@ -147,7 +191,7 @@ function Homepage() {
                 </div>
               </div>
             </article>
-            <article className="card-group-item">
+            <article className="card-group-item" style={{ marginTop: "20px" }}>
               <header className="card-header">
                 <h6 className="title">Courses</h6>
               </header>

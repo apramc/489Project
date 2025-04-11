@@ -1,3 +1,9 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
 #root {
   font-family: Poppins, sans-serif;
   color: black;
@@ -88,6 +94,7 @@
 
 .homepage-content {
   display: flex;
+  height: 100vh;
   flex-direction: row;
   align-items: center;
   width: 100%;
@@ -99,8 +106,15 @@
   .sidebar {
     float: left;
     width: 400px;
-    height: calc(100vh - 100px);
-    background-color: #f4f4f4;
+    height: 100%;
+    background-color: #f8f9fa;
     padding: 20px;
+    overflow-y: auto;
+  }
+
+  .listings {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
   }
 }
