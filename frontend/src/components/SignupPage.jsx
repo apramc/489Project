@@ -5,7 +5,11 @@ function SignupPage() {
     <section className="d-flex justify-content-center align-items-center vh-100">
       <div
         className="px-4 py-5 px-md-5 text-center text-lg-center"
-        style={{ backgroundColor: "hsl(0, 0%, 96%)" }}
+        style={{
+          backgroundColor: "hsl(0, 0%, 96%)",
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+          borderRadius: "10px",
+        }}
       >
         <div className="container">
           <div className="row gx-lg-5 justify-content-center align-items-center">
