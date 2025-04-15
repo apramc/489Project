@@ -41,7 +41,7 @@ async def get_listings(db: db_dependency):
 # Create a new listing
 @router.post("/")
 async def create_listing(
-    db: db_dependency,  # Correct usage of Annotated
+    db: db_dependency,
     name: str = Form(...),
     price: float = Form(...),
     description: str = Form(...),
@@ -61,7 +61,7 @@ async def create_listing(
         name=name,
         price=price,
         description=description,
-        image=f"http://localhost:8000/uploads/{image.filename}",  # Use full URL for the image
+        image=image.filename,  # Save only the filename
         date=date,
     )
     db.add(new_listing)
