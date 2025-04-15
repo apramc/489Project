@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Form, UploadFile, File, Depends
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 from typing import Annotated
 from pydantic import BaseModel
@@ -10,6 +11,10 @@ import shutil
 router = APIRouter()
 
 UPLOAD_DIR = "uploads"  # Directory to save uploaded files
+
+# Ensure the uploads directory is served as static files
+if not os.path.exists(UPLOAD_DIR):
+    os.makedirs(UPLOAD_DIR)
 
 class ListingBase(BaseModel):
     name: str
@@ -56,7 +61,7 @@ async def create_listing(
         name=name,
         price=price,
         description=description,
-        image=f"uploads/{image.filename}",  # Use URL for the image
+        image=f"http://localhost:8000/uploads/{image.filename}",  # Use full URL for the image
         date=date,
     )
     db.add(new_listing)
