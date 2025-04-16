@@ -15,7 +15,9 @@ import "../../public/styles/Homepage.css";
 
 function Homepage() {
   const [listings, setListings] = useState([]);
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false); // For creating a listing
+  const [showViewModal, setShowViewModal] = useState(false); // For viewing a listing
+  const [selectedListing, setSelectedListing] = useState(null); // Selected listing for the view modal
   const [formData, setFormData] = useState({
     name: "",
     price: "",
@@ -93,6 +95,12 @@ function Homepage() {
     setFormData({ ...formData, image: e.target.files[0] });
   };
 
+  // Handle card click to view listing
+  const handleCardClick = (listing) => {
+    setSelectedListing(listing);
+    setShowViewModal(true);
+  };
+
   return (
     <>
       <div className="homepage-header">
@@ -117,7 +125,7 @@ function Homepage() {
             <ul>
               <li>
                 <Link
-                  to="/"
+                  to="/home"
                   style={{ color: "inherit", textDecoration: "none" }}
                 >
                   <AiFillHome size={30} />
@@ -499,7 +507,8 @@ function Homepage() {
           </div>
         </div>
         <div className="create-listing"></div>
-        {/* Modal */}
+
+        {/* Create Listing Modal */}
         {showModal && (
           <div className="modal-overlay">
             <div className="modal-content">
@@ -544,6 +553,88 @@ function Homepage() {
             </div>
           </div>
         )}
+
+        {/* View Listing Modal */}
+        {showViewModal && selectedListing && (
+          <div
+            className="modal-overlay"
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 1000,
+            }}
+          >
+            <div
+              className="modal-content"
+              style={{
+                backgroundColor: "#fff",
+                padding: "20px",
+                borderRadius: "10px",
+                width: "700px",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <h2>{selectedListing.name}</h2>
+              <p>{selectedListing.description}</p>
+              <p>Price: ${selectedListing.price}</p>
+              <img
+                src={`http://localhost:8000/uploads/${selectedListing.image}`}
+                alt={selectedListing.name}
+                style={{
+                  width: "250px",
+                  height: "250px",
+                  objectFit: "cover",
+                  borderRadius: "5px",
+                }}
+              />
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between", // Space between the buttons
+                  marginTop: "10px",
+                }}
+              >
+                <button
+                  onClick={() => setShowViewModal(false)}
+                  style={{
+                    padding: "10px 20px",
+                    backgroundColor: "#ca1237",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Close
+                </button>
+                <button
+                  onClick={() => setShowViewModal(false)}
+                  style={{
+                    padding: "10px 20px",
+                    backgroundColor: "#ca1237",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Listings */}
         <div
           className="listings"
           style={{
@@ -561,9 +652,10 @@ function Homepage() {
                   padding: "10px", // Card padding
                   margin: "20px", // Gap between cards
                 }}
+                onClick={() => handleCardClick(listing)} // Make card clickable
               >
                 <div
-                  className="card hover-img overflow-hidden rounded-2"
+                  className="card listing-card hover-img overflow-hidden rounded-2"
                   style={{
                     width: "300px", // Card width
                     height: "300px", // Card height
@@ -581,13 +673,11 @@ function Homepage() {
                       alt={listing.name}
                       className="img-fluid w-100 object-fit-cover"
                       style={{
-                        height: "250px", // Adjust the height of the image
+                        height: "220px", // Adjust the height of the image
                         width: "100%", // Ensure the image takes full width
                         objectFit: "cover", // Ensure the image covers the area
-                        padding: "20px", // Add padding for spacing
                       }}
                     />
-
                     <div
                       className="p-4 d-flex align-items-center justify-content-between"
                       style={{
@@ -596,7 +686,7 @@ function Homepage() {
                         flexDirection: "row", // Align name and price side by side
                         justifyContent: "space-between", // Space between name and price
                         alignItems: "center", // Vertically align items
-                        padding: "10px", // Add padding for spacing
+                        marginTop: "15px", // Add some margin to the top
                       }}
                     >
                       <h6
