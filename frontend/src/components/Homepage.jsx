@@ -26,26 +26,27 @@ function Homepage() {
   });
 
   // Fetch existing listings from the backend
-  useEffect(() => {
-    const fetchListings = async () => {
-      try {
-        const response = await fetch("http://localhost:8000/home");
-        if (response.ok) {
-          const data = await response.json();
-          setListings(data);
-        } else {
-          console.error("Failed to fetch listings");
-        }
-      } catch (error) {
-        console.error("Error:", error);
+  const fetchListings = async () => {
+    try {
+      const response = await fetch("http://localhost:8000/home");
+      if (response.ok) {
+        const data = await response.json();
+        setListings(data);
+      } else {
+        console.error("Failed to fetch listings");
       }
-    };
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
+  useEffect(() => {
     fetchListings();
   }, []);
 
   const handleListingCreated = (newListing) => {
     setListings([...listings, newListing]);
+    fetchListings();
   };
 
   const handleInputChange = (e) => {
@@ -571,33 +572,53 @@ function Homepage() {
                     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", // Card box shadow
                     overflow: "hidden", // Ensure content doesn't overflow
                     display: "flex", // Center the card
+                    flexDirection: "column", // Ensure vertical alignment
                   }}
                 >
                   <div className="card-body p-0">
                     <img
-                      src={`http://localhost:8000/${listing.image}`} // Use the image path from the backend
+                      src={`http://localhost:8000/uploads/${listing.image}`} // Use the image path from the backend
                       alt={listing.name}
                       className="img-fluid w-100 object-fit-cover"
                       style={{
-                        height: "200px", // Adjust the height of the image
+                        height: "250px", // Adjust the height of the image
+                        width: "100%", // Ensure the image takes full width
                         objectFit: "cover", // Ensure the image covers the area
+                        padding: "20px", // Add padding for spacing
                       }}
                     />
+
                     <div
                       className="p-4 d-flex align-items-center justify-content-between"
                       style={{
-                        height: "100px", // Adjust the height of the text container
+                        height: "50px", // Adjust the height of the text container
                         display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
+                        flexDirection: "row", // Align name and price side by side
+                        justifyContent: "space-between", // Space between name and price
+                        alignItems: "center", // Vertically align items
+                        padding: "10px", // Add padding for spacing
                       }}
                     >
-                      <div>
-                        <h6 className="fw-semibold mb-0 fs-4">
-                          {listing.name}
-                        </h6>
-                        <span className="text-dark fs-2">${listing.price}</span>
-                      </div>
+                      <h6
+                        className="fw-semibold mb-0 fs-4"
+                        style={{
+                          fontSize: "18px", // Adjust font size for the title
+                          fontWeight: "600", // Make the title bold
+                          margin: "0", // Remove margin for proper alignment
+                        }}
+                      >
+                        {listing.name}
+                      </h6>
+                      <span
+                        className="text-dark fs-2"
+                        style={{
+                          fontSize: "12px", // Adjust font size for the price
+                          color: "#333", // Set a dark color for the price
+                          marginLeft: "10px", // Add spacing between name and price
+                        }}
+                      >
+                        ${listing.price}
+                      </span>
                     </div>
                   </div>
                 </div>

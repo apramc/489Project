@@ -4,7 +4,7 @@ Project Repository for **CptS 489**
 
 ## Project Overview
 
-This project is designed as part of the **CptS 489** course. It includes a backend built with FastAPI and a frontend built with modern JavaScript frameworks. The application allows users to [briefly describe the purpose of your project, e.g., manage listings, user authentication, etc.].
+This project is designed as part of the **CptS 489** course. It includes a backend built with FastAPI and a frontend built with modern JavaScript frameworks.
 
 ## Prerequisites
 
@@ -18,6 +18,7 @@ Before setting up the project, ensure you have the following installed on your s
 ```bash
 pip install -r requirements.txt
 ```
+
 ```bash
 npm install vite
 ```
@@ -53,7 +54,11 @@ npm install vite
    ```bash
    cd frontend
    ```
-2. Start the frontend development server:
+2. Install Material-UI and Emotion dependencies:
+   ```bash
+   npm install @mui/material @emotion/react @emotion/styled
+   ```
+3. Start the frontend development server:
    ```bash
    npm run dev
    ```

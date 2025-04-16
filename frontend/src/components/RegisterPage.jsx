@@ -1,6 +1,43 @@
-import React from "react";
+import React, { useState } from "react";
 
-function SignupPage() {
+function RegisterPage() {
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("http://localhost:8000/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || "An error occurred");
+      }
+
+      const data = await response.json();
+      alert(data.message); // Show success message
+    } catch (error) {
+      console.error(error);
+      alert(error.message);
+    }
+  };
+
   return (
     <section className="d-flex justify-content-center align-items-center vh-100">
       <div
@@ -29,29 +66,20 @@ function SignupPage() {
             <div className="col-lg-6 mb-5 mb-lg-0">
               <div className="card mx-auto">
                 <div className="card-body py-5 px-md-5">
-                  <form>
+                  <form onSubmit={handleSubmit}>
                     <div className="row">
                       <div className="col-md-6 mb-4">
                         <div data-mdb-input-init className="form-outline">
                           <input
                             type="text"
                             id="form3Example1"
+                            name="username"
                             className="form-control"
+                            value={formData.username}
+                            onChange={handleChange}
                           />
                           <label className="form-label" htmlFor="form3Example1">
-                            First name
-                          </label>
-                        </div>
-                      </div>
-                      <div className="col-md-6 mb-4">
-                        <div data-mdb-input-init className="form-outline">
-                          <input
-                            type="text"
-                            id="form3Example2"
-                            className="form-control"
-                          />
-                          <label className="form-label" htmlFor="form3Example2">
-                            Last name
+                            Username
                           </label>
                         </div>
                       </div>
@@ -61,7 +89,10 @@ function SignupPage() {
                       <input
                         type="email"
                         id="form3Example3"
+                        name="email"
                         className="form-control"
+                        value={formData.email}
+                        onChange={handleChange}
                       />
                       <label className="form-label" htmlFor="form3Example3">
                         Email address
@@ -72,7 +103,10 @@ function SignupPage() {
                       <input
                         type="password"
                         id="form3Example4"
+                        name="password"
                         className="form-control"
+                        value={formData.password}
+                        onChange={handleChange}
                       />
                       <label className="form-label" htmlFor="form3Example4">
                         Password
@@ -87,8 +121,6 @@ function SignupPage() {
 
                     <button
                       type="submit"
-                      data-mdb-button-init
-                      data-mdb-ripple-init
                       className="btn btn-primary btn-block mb-4"
                       style={{
                         backgroundColor: "#ca1237",
@@ -96,48 +128,6 @@ function SignupPage() {
                       }}
                     >
                       Sign up
-                    </button>
-
-                    <div className="text-center"></div>
-                    <p>or sign up with:</p>
-                    <button
-                      type="button"
-                      data-mdb-button-init
-                      data-mdb-ripple-init
-                      className="btn btn-link btn-floating mx-1"
-                      style={{ color: "#ca1237" }}
-                    >
-                      <i className="fab fa-facebook-f"></i>
-                    </button>
-
-                    <button
-                      type="button"
-                      data-mdb-button-init
-                      data-mdb-ripple-init
-                      className="btn btn-link btn-floating mx-1"
-                      style={{ color: "#ca1237" }}
-                    >
-                      <i className="fab fa-google"></i>
-                    </button>
-
-                    <button
-                      type="button"
-                      data-mdb-button-init
-                      data-mdb-ripple-init
-                      className="btn btn-link btn-floating mx-1"
-                      style={{ color: "#ca1237" }}
-                    >
-                      <i className="fab fa-twitter"></i>
-                    </button>
-
-                    <button
-                      type="button"
-                      data-mdb-button-init
-                      data-mdb-ripple-init
-                      className="btn btn-link btn-floating mx-1"
-                      style={{ color: "#ca1237" }}
-                    >
-                      <i className="fab fa-github"></i>
                     </button>
                   </form>
                 </div>
@@ -150,4 +140,4 @@ function SignupPage() {
   );
 }
 
-export default SignupPage;
+export default RegisterPage;

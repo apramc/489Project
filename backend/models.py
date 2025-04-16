@@ -8,16 +8,8 @@ class User(Base):
     username = Column(String, unique=True, index=True)
     email = Column(String, unique=True, index=True)
     password = Column(String, index=True)
-
-class Admin(Base):
-    __tablename__ = "admins"
-
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True)
-    email = Column(String, unique=True, index=True)
-    password = Column(String, index=True)
     is_superuser = Column(Boolean, default=False)
-
+    
 class Listing(Base):
     __tablename__ = "listings"
 
