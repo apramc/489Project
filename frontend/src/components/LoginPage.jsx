@@ -8,13 +8,35 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault();
-    if (email === "admin1@gmail.com" && password === "admin123") {
-      navigate("/admin");
-    } else {
-      console.log("Login with", email, password);
-      alert("Invalid credentials!");
+
+    try {
+      const response = await fetch("http://localhost:8000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || "Invalid credentials!");
+      }
+
+      const data = await response.json();
+      console.log("User logged in:", data);
+
+      // Redirect to page based on user role
+      if (data.is_superuser == true) {
+        navigate("/admin");
+      } else {
+        navigate("/home");
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      alert(error.message || "An unexpected error occurred.");
     }
   };
 
@@ -113,10 +135,10 @@ function LoginPage() {
                     >
                       Sign in
                     </button>
-                    {/* Sign up link */}
+                    {/* Register link */}
                     <div className="text-center mb-4">
                       <p>
-                        Don't have an account? <a href="/signup">Sign up</a>
+                        Don't have an account? <a href="/register">Sign up</a>
                       </p>
                     </div>
                   </form>

@@ -26,26 +26,27 @@ function Homepage() {
   });
 
   // Fetch existing listings from the backend
-  useEffect(() => {
-    const fetchListings = async () => {
-      try {
-        const response = await fetch("http://localhost:8000/home");
-        if (response.ok) {
-          const data = await response.json();
-          setListings(data);
-        } else {
-          console.error("Failed to fetch listings");
-        }
-      } catch (error) {
-        console.error("Error:", error);
+  const fetchListings = async () => {
+    try {
+      const response = await fetch("http://localhost:8000/home");
+      if (response.ok) {
+        const data = await response.json();
+        setListings(data);
+      } else {
+        console.error("Failed to fetch listings");
       }
-    };
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
+  useEffect(() => {
     fetchListings();
   }, []);
 
   const handleListingCreated = (newListing) => {
     setListings([...listings, newListing]);
+    fetchListings();
   };
 
   const handleInputChange = (e) => {
@@ -583,7 +584,7 @@ function Homepage() {
                         height: "250px", // Adjust the height of the image
                         width: "100%", // Ensure the image takes full width
                         objectFit: "cover", // Ensure the image covers the area
-                        padding: "10px", // Add padding for spacing
+                        padding: "20px", // Add padding for spacing
                       }}
                     />
 
@@ -598,7 +599,7 @@ function Homepage() {
                         padding: "10px", // Add padding for spacing
                       }}
                     >
-                      <h5
+                      <h6
                         className="fw-semibold mb-0 fs-4"
                         style={{
                           fontSize: "18px", // Adjust font size for the title
@@ -607,7 +608,7 @@ function Homepage() {
                         }}
                       >
                         {listing.name}
-                      </h5>
+                      </h6>
                       <span
                         className="text-dark fs-2"
                         style={{
