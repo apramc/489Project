@@ -38,6 +38,9 @@ async def get_listings(db: db_dependency):
     listings = db.query(models.Listing).all()
     return listings
 
+# Create placeholder database for review
+
+
 # Create a new listing
 @router.post("/")
 async def create_listing(
